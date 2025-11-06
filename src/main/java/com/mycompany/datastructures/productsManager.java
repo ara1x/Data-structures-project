@@ -219,7 +219,7 @@ public class productsManager {
         }
     }
 
-    //==============================================================
+    //========================================================added method 
     public boolean checkProductID(int PID) {
         if (!products.empty()) {
             products.findFirst();
@@ -232,8 +232,8 @@ public class productsManager {
         return false;
     }
 
-    //==============================================================
-    /*public Product getProducts(int PID) {
+    
+    public Product getProducts(int PID) {
         if (!products.empty()) {
             products.findFirst();
             while (!products.last()) {
@@ -245,5 +245,5 @@ public class productsManager {
                 return products.retrieve();
         }
         return null;
-    }*/
+    }
 }
