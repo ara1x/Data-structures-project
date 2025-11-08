@@ -18,24 +18,23 @@ public class reviewsManager {
         try {
             File file = new File(fileName);
             Scanner read = new Scanner(file);
+            String line = read.nextLine();
 
            
-            if (read.hasNextLine()) read.nextLine();
+            
 
-            while (read.hasNextLine()) {
-                String line = read.nextLine().trim();
-                if (line.isEmpty()) continue;
-
-                String[] parts = line.split(",");
-
-                int rID   = Integer.parseInt(parts[0].trim());
-                int pID   = Integer.parseInt(parts[1].trim());
-                int uID   = Integer.parseInt(parts[2].trim());
-                int stars = Integer.parseInt(parts[3].trim());
-                String note = parts[4];
+              while(read.hasNext())
+                {
+                    line = read.nextLine();
+                    String [] data = line.split(","); 
+                    int rID = Integer.parseInt(data[0]);
+                    int pID = Integer.parseInt(data[1]);
+                    int cID = Integer.parseInt(data[2]);
+                    int rating =  Integer.parseInt(data[3]);
+                    String comment =  data[4];
 
                 
-                Review newReview = new Review(rID, pID, uID, stars, note);
+                Review newReview = new Review(rID, pID, cID, rating, comment);
                 reviews.insert(newReview);
             }
             read.close();
@@ -56,14 +55,14 @@ public class reviewsManager {
         }
 
         System.out.println("Rate the product (1 to 5):");
-        int stars = input.nextInt(); 
+        int rate = input.nextInt(); 
 
         System.out.println("Write your comment:");
         input.nextLine(); 
-        String note = input.nextLine();
+        String comment = input.nextLine();
 
         
-        Review r = new Review(newID, productNum, customerNum, stars, note);
+        Review r = new Review(newID, productNum, customerNum, rate, comment);
 
         reviews.findFirst();
         reviews.insert(r);
