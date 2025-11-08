@@ -2,8 +2,6 @@
 package com.mycompany.datastructures;
 
 public class Review {
-
-    
     int reviewId;
     int productID;
     int customerID;
@@ -22,7 +20,7 @@ public class Review {
         this.reviewId = reviewId;
         this.productID = productID;
         this.customerID = customerID;
-        this.rating = rating;  
+        setRating(rating);  
         this.comment = comment;
     }
 
@@ -54,7 +52,7 @@ public class Review {
         return rating;
     }
 
- 
+    
     public void setRating(int rating) {
         if (rating < 1)
             this.rating = 1;
@@ -77,6 +75,5 @@ public class Review {
         return "Review{" + "reviewId=" + reviewId + ", productID=" + productID + ", customerID=" + customerID + ", rating=" + rating + ", comment=" + comment + '}';
     }
 
-
+  
 }
-
