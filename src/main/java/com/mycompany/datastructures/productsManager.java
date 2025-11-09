@@ -70,6 +70,7 @@ public class productsManager {
         Product product = new Product(pId, name, price, stock);
         products.findFirst();
         products.insert(product);
+        System.out.println("Product '" + name + "' with ID " + pId + " has been added successfully.");
     }
 
     
@@ -127,6 +128,7 @@ public class productsManager {
                 products.remove();
                 p.setStock(0);
                 products.insert(p);
+                System.out.println("Product with ID " + productID + " has been removed successfully.");
                 return p;
             }
         }
@@ -167,13 +169,13 @@ public class productsManager {
 
                 switch (choice) {
                     case 1:
-                        System.out.println("product Name:");
+                        System.out.println("Enter new product name:");
                         p.setName(input.next());
                         products.insert(p);
                         break;
 
                     case 2:
-                        System.out.println("price:");
+                        System.out.println("Enter new product price:");
                         double newPrice = input.nextDouble();
                         while (newPrice < 0) {
                             System.out.println("Price cannot be negative. Enter again:");
@@ -184,7 +186,7 @@ public class productsManager {
                         break;
 
                     case 3:
-                        System.out.println("stock:");
+                        System.out.println("Enter new stock quantity:");
                         int newStock = input.nextInt();
                         while (newStock < 0) {
                             System.out.println("Stock cannot be negative. Enter again:");
@@ -197,16 +199,17 @@ public class productsManager {
                     default:
                         System.out.println("Bad Choice");
                 }
+                System.out.println("Product with ID " + productID + " has been updated successfully.");
                 return p;
             }
         }
-        System.out.println("No such product ID");
+        System.out.println("No such product ID found");
         return null;
     }
 
       
       
-    public void Out_Stock_Products() {
+    public void Out_Of_Stock_Products() {
         if (products.empty()) {
             System.out.println("empty Products data");
         } else {
