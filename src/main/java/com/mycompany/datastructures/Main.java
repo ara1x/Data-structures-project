@@ -20,9 +20,9 @@ public class Main {
 
     // read data from files for all the 4 data structures
     public static void loadData() {
-        System.out.println("loading data from CVSs files");
+        System.out.println("Loading data...");
         products = pdata.getProducts();
-        //customers = cdata.getcustomersData();//
+        //Customers = cdata.getcustomersData();//
         //orders = odata.getordersData();//
         reviews = rdata.getAllReviews();
 
@@ -310,4 +310,45 @@ public class Main {
         }
     }
 
+//-------------------------
+   public static void main(String[] args) {
+    
+    loadData();
+    
+    int choice;
+    
+    
+    do {
+       
+        System.out.println("ـــــــــــــ");
+        System.out.println("1. Products");
+        System.out.println("2. Customers");
+        System.out.println("3. Orders");
+        System.out.println("4. Reviews");
+        System.out.println("5. Exit");
+        System.out.println("Enter your choice:");
+        choice = input.nextInt();
+
+        
+        switch (choice) {
+            case 1:
+                productsMenu();  
+                break;
+            case 2:
+                CustomersMenu();  
+                break;
+            case 3:
+                OrdersMenu();  
+                break;
+            case 4:
+                ReviewsMenu();  
+                break;
+            case 5:
+                break;  
+            default:
+                System.out.println("Bad choice, Try again");
+        }
+    } while (choice != 5);  
 }
+  }
+
