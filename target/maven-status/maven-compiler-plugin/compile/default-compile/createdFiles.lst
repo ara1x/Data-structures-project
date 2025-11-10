@@ -1,1 +1,14 @@
-com/mycompany/datastructures/DataStructures.class
+com\mycompany\datastructures\LinkedPQ$PQNode.class
+com\mycompany\datastructures\CustomerManger.class
+com\mycompany\datastructures\PQElement.class
+com\mycompany\datastructures\LinkedList$Node.class
+com\mycompany\datastructures\productsManager.class
+com\mycompany\datastructures\Order.class
+com\mycompany\datastructures\ordersManager.class
+com\mycompany\datastructures\reviewsManager.class
+com\mycompany\datastructures\LinkedList.class
+com\mycompany\datastructures\Customers.class
+com\mycompany\datastructures\Main.class
+com\mycompany\datastructures\LinkedPQ.class
+com\mycompany\datastructures\Product.class
+com\mycompany\datastructures\Review.class

@@ -3,6 +3,486 @@
  */
 package com.mycompany.datastructures;
 
+import java.util.Scanner;
+
+public class Main {
+    
+    private static Scanner input = new Scanner(System.in);
+    private static ordersManager ordersMgr;
+    private static productsManager productsMgr;
+    private static reviewsManager reviewsMgr;
+    private static CustomerManger customersMgr;
+    
+    public static void main(String[] args) {
+        
+        System.out.println("========================================");
+        System.out.println("  E-Commerce Management System");
+        System.out.println("========================================\n");
+        
+        // Load data from CSV files
+        loadData();
+        
+        // Main menu loop
+        boolean running = true;
+        while (running) {
+            displayMainMenu();
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    productMenu();
+                    break;
+                case 2:
+                    customerMenu();
+                    break;
+                case 3:
+                    orderMenu();
+                    break;
+                case 4:
+                    reviewMenu();
+                    break;
+                case 5:
+                    queriesMenu();
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("Thank you for using the system. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+    
+    // ===== DATA LOADING =====
+    private static void loadData() {
+        System.out.println("Loading data from CSV files...");
+        
+        try {
+            productsMgr = new productsManager("products.csv");
+            System.out.println("✓ Products loaded successfully");
+        } catch (Exception e) {
+            System.out.println("✗ Error loading products: " + e.getMessage());
+        }
+        
+        try {
+            customersMgr = new CustomerManger("customers.csv");
+            System.out.println("✓ Customers loaded successfully");
+        } catch (Exception e) {
+            System.out.println("✗ Error loading customers: " + e.getMessage());
+        }
+        
+        try {
+            ordersMgr = new ordersManager("orders.csv");
+            System.out.println("✓ Orders loaded successfully");
+        } catch (Exception e) {
+            System.out.println("✗ Error loading orders: " + e.getMessage());
+        }
+        
+        try {
+            reviewsMgr = new reviewsManager("reviews.csv");
+            System.out.println("✓ Reviews loaded successfully");
+        } catch (Exception e) {
+            System.out.println("✗ Error loading reviews: " + e.getMessage());
+        }
+        
+        System.out.println("\nData loading complete!\n");
+    }
+    
+    // ===== MAIN MENU =====
+    private static void displayMainMenu() {
+        System.out.println("\n========================================");
+        System.out.println("           MAIN MENU");
+        System.out.println("========================================");
+        System.out.println("1. Product Management");
+        System.out.println("2. Customer Management");
+        System.out.println("3. Order Management");
+        System.out.println("4. Review Management");
+        System.out.println("5. Queries & Reports");
+        System.out.println("0. Exit");
+        System.out.println("========================================");
+        System.out.print("Enter your choice: ");
+    }
+    
+    // ===== PRODUCT MENU =====
+    private static void productMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- PRODUCT MANAGEMENT ---");
+            System.out.println("1. Add New Product");
+            System.out.println("2. Search Product by ID");
+            System.out.println("3. Update Product");
+            System.out.println("4. Remove Product");
+            System.out.println("5. Show Out-of-Stock Products");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    productsMgr.addProduct();
+                    break;
+                case 2:
+                    Product p = productsMgr.searchProducID();
+                    if (p != null)
+                        System.out.println(p);
+                    break;
+                case 3:
+                    productsMgr.updateProduct();
+                    break;
+                case 4:
+                    productsMgr.removeProduct();
+                    break;
+                case 5:
+                    productsMgr.Out_Of_Stock_Products();
+                    break;
+                case 0:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+    
+    // ===== CUSTOMER MENU =====
+    private static void customerMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- CUSTOMER MANAGEMENT ---");
+            System.out.println("1. Register New Customer");
+            System.out.println("2. View Customer Order History");
+            System.out.println("3. Get Customer by ID");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    customersMgr.RegisterNewCustomer();
+                    break;
+                case 2:
+                    customersMgr.Ohistory();
+                    break;
+                case 3:
+                    Customers c = customersMgr.getCustomersId();
+                    if (c != null)
+                        System.out.println("Customer: " + c.getName() + " - " + c.getEmail());
+                    break;
+                case 0:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+    
+    // ===== ORDER MENU =====
+    private static void orderMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- ORDER MANAGEMENT ---");
+            System.out.println("1. Search Order by ID");
+            System.out.println("2. Cancel Order");
+            System.out.println("3. Update Order Status");
+            System.out.println("4. Orders Between Two Dates");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Order ID: ");
+                    int oid = input.nextInt();
+                    Order order = ordersMgr.searchOrderID(oid);
+                    if (order != null)
+                        System.out.println(order);
+                    break;
+                    
+                case 2:
+                    System.out.print("Enter Order ID to cancel: ");
+                    int cancelId = input.nextInt();
+                    int result = ordersMgr.cancelOrder(cancelId);
+                    if (result == 1)
+                        System.out.println("Order cancelled successfully!");
+                    else if (result == 2)
+                        System.out.println("Order was already cancelled.");
+                    else
+                        System.out.println("Order not found.");
+                    break;
+                    
+                case 3:
+                    System.out.print("Enter Order ID to update: ");
+                    int updateId = input.nextInt();
+                    ordersMgr.UpdateOrder(updateId);
+                    break;
+                    
+                case 4:
+                    System.out.print("Enter start date (dd/MM/yyyy): ");
+                    String date1 = input.next();
+                    System.out.print("Enter end date (dd/MM/yyyy): ");
+                    String date2 = input.next();
+                    ordersMgr.BetweenTwoDates(date1, date2);
+                    break;
+                    
+                case 0:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+    
+    // ===== REVIEW MENU =====
+    private static void reviewMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- REVIEW MANAGEMENT ---");
+            System.out.println("1. Add New Review");
+            System.out.println("2. Update Review");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Customer ID: ");
+                    int custId = input.nextInt();
+                    System.out.print("Enter Product ID: ");
+                    int prodId = input.nextInt();
+                    reviewsMgr.addNewReview(custId, prodId);
+                    break;
+                    
+                case 2:
+                    reviewsMgr.updateReview();
+                    break;
+                    
+                case 0:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+    
+    // ===== QUERIES MENU =====
+    private static void queriesMenu() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- QUERIES & REPORTS ---");
+            System.out.println("1. Top 3 Products by Rating");
+            System.out.println("2. Reviews by Customer");
+            System.out.println("3. Common Products Between Two Customers");
+            System.out.println("4. Average Rating for Product");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            
+            int choice = input.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    getTop3Products();
+                    break;
+                    
+                case 2:
+                    System.out.print("Enter Customer ID: ");
+                    int custId = input.nextInt();
+                    getReviewsByCustomer(custId);
+                    break;
+                    
+                case 3:
+                    System.out.print("Enter First Customer ID: ");
+                    int cust1 = input.nextInt();
+                    System.out.print("Enter Second Customer ID: ");
+                    int cust2 = input.nextInt();
+                    getCommonProducts(cust1, cust2);
+                    break;
+                    
+                case 4:
+                    System.out.print("Enter Product ID: ");
+                    int prodId = input.nextInt();
+                    getAverageRating(prodId);
+                    break;
+                    
+                case 0:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+    
+    // ===== QUERY IMPLEMENTATIONS =====
+    
+    /**
+     * Get top 3 products by average rating
+     * Time Complexity: O(n*m) where n=products, m=reviews per product
+     */
+    private static void getTop3Products() {
+        System.out.println("\n--- TOP 3 PRODUCTS BY RATING ---");
+        
+        LinkedList<Product> products = productsMgr.getProducts();
+        if (products.empty()) {
+            System.out.println("No products available.");
+            return;
+        }
+        
+        // Use Priority Queue to get top 3
+        LinkedPQ<Product> pq = new LinkedPQ<>();
+        
+        products.findFirst();
+        for (int i = 0; i < products.size(); i++) {
+            Product p = products.retrieve();
+            float avgRating = calculateAverageRating(p);
+            pq.enqueue(p, avgRating);
+            products.findNext();
+        }
+        
+        // Get top 3
+        System.out.println("\nTop 3 Products:");
+        for (int i = 0; i < 3 && pq.length() > 0; i++) {
+            PQElement<Product> element = pq.serve();
+            System.out.println((i+1) + ". " + element.data.getName() + 
+                             " (Avg Rating: " + String.format("%.2f", element.priority) + ")");
+        }
+    }
+    
+    /**
+     * Calculate average rating for a product
+     * Time Complexity: O(n) where n=number of reviews
+     */
+    private static float calculateAverageRating(Product p) {
+        LinkedList<Integer> reviews = p.getReviews();
+        if (reviews.empty())
+            return 0.0f;
+        
+        int sum = 0;
+        int count = 0;
+        
+        reviews.findFirst();
+        for (int i = 0; i < reviews.size(); i++) {
+            sum += reviews.retrieve();
+            count++;
+            reviews.findNext();
+        }
+        
+        return count > 0 ? (float)sum / count : 0.0f;
+    }
+    
+    /**
+     * Get average rating for a specific product
+     * Time Complexity: O(n)
+     */
+    private static void getAverageRating(int productId) {
+        Product p = productsMgr.getProducts(productId);
+        if (p == null) {
+            System.out.println("Product not found!");
+            return;
+        }
+        
+        float avg = calculateAverageRating(p);
+        System.out.println("Average Rating for " + p.getName() + ": " + 
+                         String.format("%.2f", avg) + " / 5.0");
+    }
+    
+    /**
+     * Get all reviews by a specific customer
+     * Time Complexity: O(n) where n=total reviews
+     */
+    private static void getReviewsByCustomer(int customerId) {
+        System.out.println("\n--- Reviews by Customer " + customerId + " ---");
+        
+        LinkedList<Review> allReviews = reviewsMgr.getAllReviews();
+        if (allReviews.empty()) {
+            System.out.println("No reviews available.");
+            return;
+        }
+        
+        boolean found = false;
+        allReviews.findFirst();
+        for (int i = 0; i < allReviews.size(); i++) {
+            Review r = allReviews.retrieve();
+            if (r.getCustomer() == customerId) {
+                System.out.println(r);
+                found = true;
+            }
+            allReviews.findNext();
+        }
+        
+        if (!found)
+            System.out.println("No reviews found for this customer.");
+    }
+    
+    /**
+     * Find common products reviewed by two customers with rating > 4
+     * Time Complexity: O(n*m) where n=reviews of cust1, m=reviews of cust2
+     */
+    private static void getCommonProducts(int cust1, int cust2) {
+        System.out.println("\n--- Common Products (Rating > 4) ---");
+        
+        LinkedList<Review> allReviews = reviewsMgr.getAllReviews();
+        if (allReviews.empty()) {
+            System.out.println("No reviews available.");
+            return;
+        }
+        
+        // Get products reviewed by customer 1 with rating > 4
+        LinkedList<Integer> cust1Products = new LinkedList<>();
+        allReviews.findFirst();
+        for (int i = 0; i < allReviews.size(); i++) {
+            Review r = allReviews.retrieve();
+            if (r.getCustomer() == cust1 && r.getRating() > 4) {
+                cust1Products.insert(r.getProduct());
+            }
+            allReviews.findNext();
+        }
+        
+        if (cust1Products.empty()) {
+            System.out.println("Customer " + cust1 + " has no reviews with rating > 4");
+            return;
+        }
+        
+        // Find common products with customer 2
+        boolean found = false;
+        cust1Products.findFirst();
+        for (int i = 0; i < cust1Products.size(); i++) {
+            int productId = cust1Products.retrieve();
+            
+            // Check if customer 2 also reviewed this product with rating > 4
+            allReviews.findFirst();
+            for (int j = 0; j < allReviews.size(); j++) {
+                Review r = allReviews.retrieve();
+                if (r.getCustomer() == cust2 && 
+                    r.getProduct() == productId && 
+                    r.getRating() > 4) {
+                    
+                    Product p = productsMgr.getProducts(productId);
+                    if (p != null) {
+                        System.out.println("- " + p.getName() + " (ID: " + productId + ")");
+                        found = true;
+                    }
+                    break;
+                }
+                allReviews.findNext();
+            }
+            
+            cust1Products.findNext();
+        }
+        
+        if (!found)
+            System.out.println("No common products found with rating > 4");
+    }
+}
+
+/*
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -350,5 +830,5 @@ public class Main {
         }
     } while (choice != 5);  
 }
-  }
+  }*/
 
