@@ -228,7 +228,13 @@ public class Main {
     public static void commonProducts(int cid1, int cid2) {
         LinkedList<Integer> customer1Products = new LinkedList<Integer>();
         LinkedList<Integer> customer2Products = new LinkedList<Integer>();
-
+        
+        if (reviews.empty()) {
+        System.out.println("No reviews available.");
+        return;  
+    }
+        
+       
         reviews.findFirst();
         while (!reviews.last()) {
             if (reviews.retrieve().getCustomer() == cid1) {
