@@ -101,6 +101,38 @@ public class productsManager {
         System.out.println("No such product ID");
         return null;
     }
+    
+    public Product searchProducName()
+{
+    if (products.empty()) {
+        System.out.println("empty Products data");
+    } else {
+        System.out.println("Enter product Name: ");
+        String name = input.nextLine();
+        name = input.nextLine(); 
+        
+        boolean found = false;
+        
+        products.findFirst();
+        while (!products.last()) {
+            if (products.retrieve().getName().compareToIgnoreCase(name) == 0) {
+                found = true;
+                break;
+            }
+            products.findNext();
+        }
+
+        if (products.retrieve().getName().compareToIgnoreCase(name) == 0)
+            found = true;
+
+        if (found)
+            return products.retrieve();
+    }
+
+    System.out.println("No such product Name");
+    return null;
+}
+
 
       
     public Product removeProduct() {

@@ -65,31 +65,33 @@ public class Main {
     }
 //--------------------------
 
-    public static void productsMenu() {
-        int choice;
+   public static void productsMenu() {
+    int choice;
 
-        System.out.println("ــــــــــProducts Menu ــــــــ");
-        System.out.println("1. Add a new product");
-        System.out.println("2. Remove a product");
-        System.out.println("3. Update product");
-        System.out.println("4. Search product by ID");
-        System.out.println("5. Track all out-of-stock products");
-        System.out.println("6. Return to main menu");
-        System.out.println("Please enter your choice:");
+    System.out.println("ــــــــــProducts Menu ــــــــ");
+    System.out.println("1. Add a new product");
+    System.out.println("2. Remove a product");
+    System.out.println("3. Update product");
+    System.out.println("4. Search product by ID");
+    System.out.println("5. Search product by Name");
+    System.out.println("6. Track all out-of-stock products");
+    System.out.println("7. Return to main menu");
+    System.out.println("Please enter your choice:");
 
+    try {
         choice = input.nextInt();
 
-        switch (choice) {
-            case 1:
+         while (true) {
+            if (choice == 1) {
                 pdata.addProduct();
                 break;
-            case 2:
-                pdata.removeProduct();//No product will be removed, stock will just be set to zero.
+            } else if (choice == 2) {
+                pdata.removeProduct(); // No product will be removed, stock will just be set to zero.
                 break;
-            case 3:
+            } else if (choice == 3) {
                 pdata.updateProduct();
                 break;
-            case 4:
+            } else if (choice == 4) {
                 Product pro = pdata.searchProducID();
                 if (pro != null) {
                     System.out.println("Product found: " + pro);
@@ -97,39 +99,58 @@ public class Main {
                     System.out.println("No product found with the given ID.");
                 }
                 break;
-            case 5:
+            } else if (choice == 5) {
+               Product pro = pdata.searchProducName();
+                if (pro != null) {
+                    System.out.println("Product found: " + pro);
+                } else {
+                    System.out.println("No product found with the given Name.");
+                }
+                break;
+            }else if (choice == 6) {
                 pdata.Out_Of_Stock_Products();
                 break;
-            case 6:
+            } else if (choice == 7) {
                 System.out.println("Returning to main menu...");
                 return;
-            default:
-
+            } else {
                 System.out.println("Invalid choice! Please select a valid option between 1 and 6.");
+                break;
+            }
         }
+    } catch (java.util.InputMismatchException e) {
+        System.out.println("Invalid input! Please enter a valid number.");
+        input.nextLine();  
     }
+}
+
 
 //--------------------------
     public static void ReviewsMenu() {
-        System.out.println("ــــــــــ Review Menu ــــــــ");
-        System.out.println("1. Add a new review");
-        System.out.println("2. Edit an existing review");
-        System.out.println("3. Get the average rating for a product");
-        System.out.println("4. Top 3 products");
-        System.out.println("5. Common products");
-        System.out.println("6. Return to Main menu");
-        System.out.print("Enter your choice: ");
+    int choice;
 
-        int choice = input.nextInt();
+    
+    System.out.println("ــــــــــ Review Menu ــــــــ");
+    System.out.println("1. Add a new review");
+    System.out.println("2. Edit an existing review");
+    System.out.println("3. Get the average rating for a product");
+    System.out.println("4. Top 3 products");
+    System.out.println("5. Common products");
+    System.out.println("6. Return to Main menu");
+    System.out.print("Enter your choice: ");
 
-        switch (choice) {
-            case 1:
+    try {
+        
+        choice = input.nextInt();
+
+        while (true) {
+            if (choice == 1) {
                 addReviewPrompt();
                 break;
-            case 2:
+            } else if (choice == 2) {
                 rdata.updateReview();
                 break;
-            case 3:
+            } else if (choice == 3) {
                 System.out.print("Enter product ID to get an average rating: ");
                 int pid = input.nextInt();
 
@@ -140,23 +161,29 @@ public class Main {
                 float AVG = avgRating(pid);
                 System.out.println("The average rating for product ID " + pid + " is: " + AVG);
                 break;
-            case 4:
+            } else if (choice == 4) {
                 top3Products();
                 break;
-            case 5:
-                System.out.print("Enter the first customer's ID: "); 
+            } else if (choice == 5) {
+                System.out.print("Enter the first customer's ID: ");
                 Customer cid1 = cdata.getCustomerID();
                 System.out.print("Enter the second customer's ID: ");
                 Customer cid2 = cdata.getCustomerID();
                 commonProducts(cid1.getCustomerId(), cid2.getCustomerId());
                 break;
-            case 6:
+            } else if (choice == 6) {
                 System.out.println("Returning to Main menu...");
                 break;
-            default:
+            } else {
                 System.out.println("Invalid choice. Please try again.");
+                break;
+            }
         }
+    } catch (java.util.InputMismatchException e) {
+        System.out.println("Invalid input! Please enter a valid number.");
+        input.nextLine();  // Clear the invalid input from the buffer
     }
+}
 
 //--------------------------
     public static void addReviewPrompt() {
