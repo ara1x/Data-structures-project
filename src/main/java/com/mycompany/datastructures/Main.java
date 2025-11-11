@@ -714,7 +714,7 @@ public static void placeNewOrder() {
                cdata.RegisterNewCustomer();
                 break;
             } else if (choice == 2) {
-                placeOrder();
+                PlaceOrder();
                 break;
             } else if (choice == 3) {
              cdata.Ohistory ();
