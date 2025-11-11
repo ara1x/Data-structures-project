@@ -26,7 +26,11 @@ public class CustomerManger {
             System.out.print(ex.getMessage());
         }
     }
-
+    public LinkedList<Customers> getcustomersData( )
+    {
+        return customer ;
+    
+    }
    public void RegisterNewCustomer(){
         Customers customers =new Customers();
  
