@@ -42,11 +42,12 @@ public class CustomerManger {
         }
 
         System.out.println("enter customer name");
-        String name = input.next();
+       input.nextLine();
+        String name=input.nextLine();
         customer.retrieve().setName(name);
 
-        System.out.println("enter customer name");
-        String email = input.next();
+        System.out.println("enter customer email");
+        String email = input.nextLine();
         customer.retrieve().setEmail(email);
 
         customer.insert(customers);
