@@ -62,27 +62,27 @@ public class Main {
         }
 
                if( !customer.empty()){
-        customer.findfirst();
+        customer.findFirst();
         while(!customer.last()){
             
-             orders.findfirst();
+             orders.findFirst();
         while(!orders.last()){
             if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef()){
                 customer.retrieve().PlaceNew( orders.retrieve().getoId());}
-            orders.findnext();
+            orders.findNext();
         }
         if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef())
                 customer.retrieve().PlaceNew( orders.retrieve().getoId());
         
-        customer.findnext();
+        customer.findNext();
             }
         //check the last elemeint in 
         if(!customer.empty()){
-            orders.findfirst();
+            orders.findFirst();
         while(!orders.last()){
             if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef()){
                 customer.retrieve().PlaceNew( orders.retrieve().getoId());}
-            orders.findnext();
+            orders.findNext();
         }
         }
         }
