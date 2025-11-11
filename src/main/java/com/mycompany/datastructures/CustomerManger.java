@@ -123,27 +123,26 @@ customers.setCustomerID(customerID);
 
     }
 
-    public Customers getCustomersId() {
-
-        if (customer.empty()) {
-            System.out.println("");
-        } else {
-            System.out.println("enter customer ID");
-        }
-        int customerID = input.nextInt();
-        customer.findFirst();
-        while (!customer.last()) {
-            if (customer.retrieve().getCustomerID() == customerID) {
-                return customer.retrieve();
-            }
-            customer.findNext();
-        }
-        if (customer.retrieve().getCustomerID() == customerID) {
-            return customer.retrieve();
-        }
-
-        System.out.println("Customer not found");
-        return null;
+      public Customers getCustomersId(){
+    
+    if(customer.empty()){
+        System.out.println("No customers available");
     }
+    else{
+        System.out.println("enter custmer ID");
+     int customerID = input.nextInt();
+    customer.findfirst();
+       while(!customer.last()){
+        if(customer.retrieve().getCustomerID()== customerID){
+    return customer.retrieve();}
+        customer.findnext();
+            }
+     if(customer.retrieve().getCustomerID()== customerID)
+    return customer.retrieve();
+    }
+      System.out.println("Customer not found");
+    
+      return null;
+}  
 
 }
