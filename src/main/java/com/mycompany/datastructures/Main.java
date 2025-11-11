@@ -11,7 +11,10 @@ import java.util.Scanner;
 public class Main {
 
     public static Scanner input = new Scanner(System.in);
-
+    
+    public static CustmerManger cdata = new CustmerManger("Customers.csv");
+    public static LinkedList<Customers> customer;
+    
     public static productsManager pdata = new productsManager("prodcuts.csv");
     public static LinkedList<Product> products;
 
@@ -22,11 +25,16 @@ public class Main {
     public static LinkedList<Order> orders;
 
 
+
+
+
+
+    
     // read data from files for all the 4 data structures
     public static void loadData() {
         System.out.println("Loading data...");
         products = pdata.getProducts();
-        //Customers = cdata.getcustomersData();//
+        customer = cdata.getcustomersData();
         orders = odata.getordersData();
         reviews = rdata.getAllReviews();
 
@@ -52,6 +60,37 @@ public class Main {
         } else {
             System.out.println("No products or reviews available.");
         }
+
+               if( !customer.empty()){
+        customer.findfirst();
+        while(!customer.last()){
+            
+             orders.findfirst();
+        while(!orders.last()){
+            if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef()){
+                customer.retrieve().PlaceNew( orders.retrieve().getoId());}
+            orders.findnext();
+        }
+        if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef())
+                customer.retrieve().PlaceNew( orders.retrieve().getoId());
+        
+        customer.findnext();
+            }
+        //check the last elemeint in 
+        if(!customer.empty()){
+            orders.findfirst();
+        while(!orders.last()){
+            if(customer.retrieve().getCustomerID()==orders.retrieve().getCustomerRef()){
+                customer.retrieve().PlaceNew( orders.retrieve().getoId());}
+            orders.findnext();
+        }
+        }
+        }
+
+
+
+
+        
 
     }
 
@@ -655,6 +694,47 @@ public static void placeNewOrder() {
     System.out.println(orders.retrieve());
 }
 // 
+ public static void CustomersMenu() {
+    int choice;
+
+    
+    System.out.println("ــــــــــ Customers Menu ــــــــ");
+    System.out.println("1. Register new customer");
+    System.out.println("2. Place a new order");
+    System.out.println("3. View order history");
+    System.out.println("4. Return to Main menu");
+    System.out.print("Enter your choice: ");
+
+    try {
+        
+        choice = input.nextInt();
+
+        while (true) {
+            if (choice == 1) {
+               cdata.RegisterNewCustomer();
+                break;
+            } else if (choice == 2) {
+                placeOrder();
+                break;
+            } else if (choice == 3) {
+             cdata.Ohistory ();
+                break;
+            } else if (choice == 4) {
+                System.out.println("Returning to Main menu...");
+                break;
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+                break;
+            }
+        }
+    } catch (java.util.InputMismatchException e) {
+        System.out.println("Invalid input! Please enter a valid number.");
+        input.nextLine();  // Clear the invalid input from the buffer
+    }
+}
+
+
+    
 //-------------------------
    public static void main(String[] args) {
     
