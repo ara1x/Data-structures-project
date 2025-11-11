@@ -416,148 +416,169 @@ private static void searchForOrder() {
  */
 
 private static void cancelAnOrder() {
-    System.out.print("\n→ Enter Order ID to cancel: ");
-    int orderId = input.nextInt();
+      System.out.print("\n→ Order ID to cancel: ");
+    int orderID = input.nextInt();
     
-    if (!odata.Checkorderid(orderId)) {
-        System.out.println("\n✗ Order not found.");
-        return;
+    Order orderToCancel = odata.searchOrderID(orderID);
+    
+    while (orderToCancel == null) {
+        System.out.print("Not found, re-enter ID: ");
+        orderID = input.nextInt();
+        orderToCancel = odata.searchOrderID(orderID);
     }
     
-    Order cancelOrder = odata.searchOrderID(orderId);
+    int result = odata.cancelOrder(orderID);
     
-    if (cancelOrder.getStatus().equalsIgnoreCase("cancelled")) {
-        System.out.println("\n⚠ Already cancelled.");
-        return;
-    }
-    
-    odata.cancelOrder(orderId);
-    
-    // Update customer
-    customers.findFirst();
-    for (int i = 0; i < customers.size(); i++) {
-        if (customers.retrieve().getCustomerID() == cancelOrder.getCustomerRef()) {
-            Customers c = customers.retrieve();
-            customers.remove();
-            c.removeOrder(cancelOrder.getoId());
-            customers.insert(c);
-            break;
-        }
-        customers.findNext();
-    }
-    
-    // Update stock
-    cancelOrder.getProducts().findFirst();
-    for (int x = 0; x < cancelOrder.getProducts().size(); x++) {
-        int pid = cancelOrder.getProducts().retrieve();
+    if (result == 1) {
         
-        products.findFirst();
-        for (int j = 0; j < products.size(); j++) {
-            if (products.retrieve().getProductId() == pid) {
-                products.retrieve().addStock(1);
-                //break; why
+        // Update customer
+        customer.findFirst();
+        int i = 0;
+        while (i < customer.size()) {
+            if (customer.retrieve().getCustomerID() == orderToCancel.getCustomerRef()) {
+                Customers c = customer.retrieve();
+                customer.remove();
+                c.removeOrder(orderToCancel.getoId());
+                customer.insert(c);
+                break;
             }
-            products.findNext();
+            customer.findNext();
+            i++;
         }
-        cancelOrder.getProducts().findNext();
+        
+        // Update stock
+        orderToCancel.getProducts().findFirst();
+        int x = 0;
+        while (x < orderToCancel.getProducts().size()) {
+            
+            products.findFirst();
+            int j = 0;
+            while (j < products.size()) {
+                if (products.retrieve().getProductId() == orderToCancel.getProducts().retrieve()) {
+                    Product p = products.retrieve();
+                    products.remove();
+                    p.addStock(1);
+                    products.insert(p);
+                }
+                products.findNext();
+                j++;
+            }
+            
+            orderToCancel.getProducts().findNext();
+            x++;
+        }
+        
+        System.out.println("\nOrder (" + orderToCancel.getoId() + ") cancelled successfully");
     }
-    
-    System.out.println("\n✓ Order cancelled successfully.");
 }
 
-  public static void PlaceOrder()
+  public static void placeNewOrder()
     {
-            Order new_order = new Order ();
-            int total_price = 0;
+             Order newOrder = new Order();
+    double totalAmount = 0;
+    
+    System.out.print("\nOrder ID: ");
+    int id = input.nextInt();
+    
+    while (odata.Checkorderid(id)) {
+        System.out.print("ID taken, enter new one: ");
+        id = input.nextInt();
+    }
+    newOrder.setOrderId(id);
+    
+    System.out.print("Customer ID: ");
+    int customerId = input.nextInt();
+    
+    while (!cdata.check(customerId)) {
+        System.out.print("Customer doesn't exist, re-enter: ");
+        customerId = input.nextInt();
+    }
+    newOrder.setcustomerRef(customerId);
+    
+    boolean addingProducts = true;
+    
+    while (addingProducts) {
+        System.out.print("Product ID: ");
+        int productId = input.nextInt();
+        
+        boolean productFound = false;
+        
+        if (!products.empty()) {
+            products.findFirst();
             
-            System.out.println("Enter order ID: ");
-            int oid = input.nextInt();
-            while ( odata.Checkorderid(oid))
-            {
-                System.out.println("Re-enter order id, is available , try again");
-                oid = input.nextInt();
-            }
-            new_order.setOrderId(oid);
-            
-            System.out.println("Enter customer ID:");
-            int cid = input.nextInt();
-            while(! cdata.checkCustomerID(cid))
-            {
-                System.out.println("Re-enter customer ID, is not available , try again");
-                cid = input.nextInt();
-            }
-            new_order.setcustomerRef(cid);
-            
-            char answer = 'y';
-            while (answer == 'y' || answer == 'Y')
-            {
-                System.out.println("Enter product ID:");
-                int pid = input.nextInt();
-               
-                boolean found = false;
+            int count = 0;
+            while (count < products.size()) {
                 
-                products.findFirst();
-                for ( int i = 0 ;  i < products.size() ;i++)
-                {
-                    if (products.retrieve().getProductId() == pid)
-                    {
-                        if (products.retrieve().getStock() == 0)
-                            System.out.println("product out stock , try another time");
-                        else if (products.retrieve().getStock() == -1)
-                            System.out.println("Archived product, cant be use");
-                        else
-                        {
-                            Product pp = products.retrieve();
-                            products.remove();
-                            pp.setStock(pp.getStock()-1);
-                            products.insert(pp);
-                            System.out.println("product added to order");
-                            found = true;
-                            
-                            new_order.addProduct(pp.getProductId());
-                            total_price += pp.getPrice();
-                        }
-                        break;
-                    }
-                    products.findNext();
-                }
-
-                if (!found)
-                        System.out.println("  No such product id");
+                if (products.retrieve().getProductId() == productId) {
+                    productFound = true;
                     
-                
-                System.out.println("Do you want to continue adding product? (Y/N)");
-                answer = input.next().charAt(0);
-            }
-            
-            new_order.setTotal_price(total_price);
-            
-            System.out.println("Enter first date (dd/mm/yyyy)");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate Ldate = LocalDate.parse(input.next(), formatter);
-            new_order.setDate(Ldate);
-     
-            System.out.println("Enter new status  (pending, shipped, delivered, cancelled)....");
-            new_order.setStatus(input.next());
-            
-            orders.insert(new_order);
-            
-            // add order to customer list
-            customers.findFirst();
-            for(int i = 0 ; i < customers.size(); i++)
-            {
-                if (customers.retrieve().getCustomerId() == new_order.getCustomerRef())
-                {
-                    Customer cust = customers.retrieve();
-                    customers.remove();
-                    cust.addOrder(oid);
-                    customers.insert(cust);
+                    int stock = products.retrieve().getStock();
+                    
+                    if (stock == 0) {
+                        System.out.println("Out of stock");
+                    } else if (stock == -1) {
+                        System.out.println("Product archived");
+                    } else {
+                        Product p = products.retrieve();
+                        products.remove();
+                        p.setStock(stock - 1);
+                        products.insert(p);
+                        
+                        newOrder.addProduct(productId);
+                        totalAmount = totalAmount + p.getPrice();
+                        
+                        System.out.println("Product included");
+                        productFound = true;
+                    }
                     break;
                 }
-                customers.findNext();
-            }   
+                
+                products.findNext();
+                count++;
+            }
+        }
+        
+        if (!productFound) {
+            System.out.println("Product ID invalid");
+        }
+        
+        System.out.print("Add more? (Y/N): ");
+        char response = input.next().charAt(0);
+        
+        if (response != 'y' && response != 'Y') {
+            addingProducts = false;
+        }
+    }
+    
+    newOrder.setTotal_price(totalAmount);
+    
+    System.out.print("Date (dd/MM/yyyy): ");
+    newOrder.setDate(input.next());
+    
+    System.out.print("Status: ");
+    newOrder.setStatus(input.next());
+    
+    orders.insert(newOrder);
+    
+    if (!customer.empty()) {
+        customer.findFirst();
+        
+        int idx = 0;
+        while (idx < customer.size()) {
             
-            System.out.println("Order had been added ");
+         if (customer.retrieve().getCustomerID() == customerId) {
+    Customers c = customer.retrieve();
+    customer.remove();
+    c.PlaceNew(id);
+    customer.insert(c);
+}
+            
+            customer.findNext();
+            idx++;
+        }
+    }
+    
+    System.out.println("\nOrder added successfully");  System.out.println("Order had been added ");
             System.out.println(orders.retrieve());
     }
     
@@ -601,97 +622,6 @@ private static void findOrdersInDateRange() {
     }
     
     System.out.println("─".repeat(50));
-}
-
-public static void placeNewOrder() {
-    Order orderObj = new Order();
-    int priceTotal = 0;
-    
-    System.out.print("\n→ Enter Order ID: ");
-    int orderID = input.nextInt();
-    while (odata.Checkorderid(orderID)) {
-        System.out.print("⚠ ID exists. Try another: ");
-        orderID = input.nextInt();
-    }
-    orderObj.setOrderId(orderID);
-    
-    System.out.print("→ Enter Customer ID: ");
-    int custID = input.nextInt();
-    while (!cdata.check(custID)) {
-        System.out.print("⚠ Customer not found. Re-enter: ");
-        custID = input.nextInt();
-    }
-    orderObj.setcustomerRef(custID);
-    
-    char addMore = 'y';
-    while (addMore == 'y' || addMore == 'Y') {
-        System.out.print("→ Product ID: ");
-        int prodID = input.nextInt();
-        
-        boolean located = false;
-        
-        products.findFirst();
-        int i = 0;
-        while (i < products.size()) {
-            if (products.retrieve().getProductId() == prodID) {
-                Product prod = products.retrieve();
-                
-                if (prod.getStock() == 0) {
-                    System.out.println("✗ Out of stock.");
-                } else if (prod.getStock() == -1) {
-                    System.out.println("✗ Archived product.");
-                } else {
-                    products.remove();
-                    prod.setStock(prod.getStock() - 1);
-                    products.insert(prod);
-                    
-                    orderObj.addProduct(prod.getProductId());
-                    priceTotal += prod.getPrice();
-                    
-                    System.out.println("✓ Added to order.");
-                    located = true;
-                }
-                break;
-            }
-            products.findNext();
-            i++;
-        }
-        
-        if (!located && prod.getStock() != 0 && prod.getStock() != -1)
-            System.out.println("✗ Product not found.");
-        
-        System.out.print("→ Add another product? (Y/N): ");
-        addMore = input.next().charAt(0);
-    }
-    
-    orderObj.setTotal_price(priceTotal);
-    
-    System.out.print("→ Order Date (dd/MM/yyyy): ");
-    String dateInput = input.next();
-    orderObj.setDate(dateInput);
-    
-    System.out.print("→ Status (pending/shipped/delivered/cancelled): ");
-    orderObj.setStatus(input.next());
-    
-    orders.insert(orderObj);
-    
-    // Add to customer
-    customers.findFirst();
-    int j = 0;
-    while (j < customers.size()) {
-        if (customers.retrieve().getCustomerID() == orderObj.getCustomerRef()) {
-            Customers c = customers.retrieve();
-            customers.remove();
-            c.PlaceNew(orderID);
-            customers.insert(c);
-            break;
-        }
-        customers.findNext();
-        j++;
-    }
-    
-    System.out.println("\n✓ Order created successfully!");
-    System.out.println(orders.retrieve());
 }
 // 
  public static void CustomersMenu() {
