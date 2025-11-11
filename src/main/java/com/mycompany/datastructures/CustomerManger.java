@@ -27,32 +27,34 @@ public class CustomerManger {
         }
     }
 
-    public void RegisterNewCustomer() {
-        Customers customers = new Customers();
+   public void RegisterNewCustomer(){
+        Customers customers =new Customers();
+ 
+    
+     System.out.println("enter Customer ID");
+     int customerID = input.nextInt();
+     
+    if(check(customerID))
+     customers.setCustomerID(customerID);
+      while(!check(customerID)) {   
+         System.out.println("invalid id please enter another one");  
+           customerID = input.nextInt();
+      }  
+customers.setCustomerID(customerID);
 
-        System.out.println("enter customer ID");
-        int customerID = input.nextInt();
-
-        if (check(customerID)) {
-            customer.retrieve().setCustomerID(customerID);
-        }
-        while (!check(customerID)) {
-            System.out.println("Invalid ID. Please enter another one");
-            customerID = input.nextInt();
-        }
-
-        System.out.println("enter customer name");
-       input.nextLine();
-        String name=input.nextLine();
-        customer.retrieve().setName(name);
-
-        System.out.println("enter customer email");
-        String email = input.nextLine();
-        customer.retrieve().setEmail(email);
-
-        customer.insert(customers);
-
-    }
+ System.out.println("enter customer name");
+  input.nextLine();
+ String name=input.nextLine();
+      customers.setName(name);
+              
+   System.out.println("enter customer email");
+   String email=input.nextLine();
+ 
+   customers.setEmail(email);
+   
+    customer.insert(customers);
+   
+}
 
     public void Ohistory() {
         LinkedList<Integer> order = new LinkedList<Integer>();
