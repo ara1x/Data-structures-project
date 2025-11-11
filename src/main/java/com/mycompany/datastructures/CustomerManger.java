@@ -135,11 +135,11 @@ customers.setCustomerID(customerID);
     else{
         System.out.println("enter custmer ID");
      int customerID = input.nextInt();
-    customer.findfirst();
+    customer.findFirst();
        while(!customer.last()){
         if(customer.retrieve().getCustomerID()== customerID){
     return customer.retrieve();}
-        customer.findnext();
+        customer.findNext();
             }
      if(customer.retrieve().getCustomerID()== customerID)
     return customer.retrieve();

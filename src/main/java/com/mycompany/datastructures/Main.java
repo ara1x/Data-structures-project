@@ -1,6 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
+
 package com.mycompany.datastructures;
 
 import java.io.File;
@@ -209,10 +207,10 @@ public class Main {
                 break;
             } else if (choice == 5) {
                 System.out.print("Enter the first customer's ID: ");
-                Customer cid1 = cdata.getCustomerID();
+                Customers cid1 = cdata.getCustomersId();
                 System.out.print("Enter the second customer's ID: ");
-                Customer cid2 = cdata.getCustomerID();
-                commonProducts(cid1.getCustomerId(), cid2.getCustomerId());
+                Customers cid2 = cdata.getCustomersId();
+                commonProducts(cid1.getCustomerID(), cid2.getCustomerID());
                 break;
             } else if (choice == 6) {
                 System.out.println("Returning to Main menu...");
@@ -232,7 +230,7 @@ public class Main {
     public static void addReviewPrompt() {
         System.out.print("Enter the Customer ID: ");
         int customerId = input.nextInt();
-        while (!cdata.checkCustomerID(customerId)) {
+        while (!cdata.check(customerId)) {
             System.out.println("Customer ID not available. Please enter again:");
             customerId = input.nextInt();
         }
