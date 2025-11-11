@@ -12,7 +12,7 @@ public class Main {
 
     public static Scanner input = new Scanner(System.in);
     
-    public static CustmerManger cdata = new CustmerManger("Customers.csv");
+    public static CustomerManger cdata = new CustomerManger("Customers.csv");
     public static LinkedList<Customers> customer;
     
     public static productsManager pdata = new productsManager("prodcuts.csv");
@@ -416,7 +416,7 @@ private static void searchForOrder() {
  */
 
 private static void cancelAnOrder() {
-      System.out.print("\n→ Order ID to cancel: ");
+    System.out.print("\n→ Order ID to cancel: ");
     int orderID = input.nextInt();
     
     Order orderToCancel = odata.searchOrderID(orderID);
@@ -472,7 +472,7 @@ private static void cancelAnOrder() {
     }
 }
 
-  public static void placeNewOrder()
+  public static void PlaceOrder()
     {
              Order newOrder = new Order();
     double totalAmount = 0;
@@ -622,6 +622,113 @@ private static void findOrdersInDateRange() {
     }
     
     System.out.println("─".repeat(50));
+}
+
+public static void placeNewOrder() {
+    Order newOrder = new Order();
+    double totalAmount = 0;
+    
+    System.out.print("\nOrder ID: ");
+    int id = input.nextInt();
+    
+    while (odata.Checkorderid(id)) {
+        System.out.print("ID taken, enter new one: ");
+        id = input.nextInt();
+    }
+    newOrder.setOrderId(id);
+    
+    System.out.print("Customer ID: ");
+    int customerId = input.nextInt();
+    
+    while (!cdata.check(customerId)) {
+        System.out.print("Customer doesn't exist, re-enter: ");
+        customerId = input.nextInt();
+    }
+    newOrder.setcustomerRef(customerId);
+    
+    boolean addingProducts = true;
+    
+    while (addingProducts) {
+        System.out.print("Product ID: ");
+        int productId = input.nextInt();
+        
+        boolean productFound = false;
+        
+        if (!products.empty()) {
+            products.findFirst();
+            
+            int count = 0;
+            while (count < products.size()) {
+                
+                if (products.retrieve().getProductId() == productId) {
+                    productFound = true;
+                    
+                    int stock = products.retrieve().getStock();
+                    
+                    if (stock == 0) {
+                        System.out.println("Out of stock");
+                    } else if (stock == -1) {
+                        System.out.println("Product archived");
+                    } else {
+                        Product p = products.retrieve();
+                        products.remove();
+                        p.setStock(stock - 1);
+                        products.insert(p);
+                        
+                        newOrder.addProduct(productId);
+                        totalAmount = totalAmount + p.getPrice();
+                        
+                        System.out.println("Product included");
+                        productFound = true;
+                    }
+                    break;
+                }
+                
+                products.findNext();
+                count++;
+            }
+        }
+        
+        if (!productFound) {
+            System.out.println("Product ID invalid");
+        }
+        
+        System.out.print("Add more? (Y/N): ");
+        char response = input.next().charAt(0);
+        
+        if (response != 'y' && response != 'Y') {
+            addingProducts = false;
+        }
+    }
+    
+    newOrder.setTotal_price(totalAmount);
+    
+    System.out.print("Date (dd/MM/yyyy): ");
+    newOrder.setDate(input.next());
+    
+    System.out.print("Status: ");
+    newOrder.setStatus(input.next());
+    
+    orders.insert(newOrder);
+    
+    if (!customer.empty()) {
+        customer.findFirst();
+        
+        int idx = 0;
+        while (idx < customer.size()) {
+            
+            if (customer.retrieve().getCustomerID() == customerId) {
+                customer.retrieve().PlaceNew(id);
+                break;
+            }
+            
+            customer.findNext();
+            idx++;
+        }
+    }
+    
+    System.out.println("\nOrder added successfully");
+    System.out.println(orders.retrieve());
 }
 // 
  public static void CustomersMenu() {
